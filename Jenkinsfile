@@ -39,5 +39,34 @@ pipeline{
                 }
             }
         }
+        stage('quality-gate'){
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps{
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+        stage('docker-image-build'){
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps{
+            sh "docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
+            }
+        }
+        stage('docker-image-push'){
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                    sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
+                    sh "docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}"
+                }
+            }
+        }
     }
 }
