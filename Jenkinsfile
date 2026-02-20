@@ -85,7 +85,7 @@ pipeline{
             }
             steps{
                 script {
-                    env.EC2_PUBLIC_IP = sh(script: cd terraform && terraform output -raw public_ip, returnStdout: true).trim()
+                    env.EC2_PUBLIC_IP = sh(script: "cd terraform && terraform output -raw public_ip", returnStdout: true).trim()
                     echo "EC2 Public IP: ${env.EC2_PUBLIC_IP}"
                 }
             }
