@@ -68,5 +68,51 @@ pipeline{
                 }
             }
         }
+        stage('terraform-init&apply'){
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps{
+                dir('terraform') {
+                    sh 'terraform init'
+                    sh "terraform apply --auto-approve"
+                }
+            }
+        }
+        stage('get ec2 public ip'){
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps{
+                script {
+                    env.EC2_PUBLIC_IP = sh(script: cd terraform && terraform output -raw public_ip, returnStdout: true).trim()
+                    echo "EC2 Public IP: ${env.EC2_PUBLIC_IP}"
+                }
+            }
+        }
+        stage('deploy application'){
+            when {
+                expression { params.ACTION == 'apply' }
+            }
+            steps{
+                sleep 60
+                sshagent(['ec2-ssh']){
+                    sh """
+                    ssh -o StrictHostKeyChecking=no -i devops ubuntu@${env.EC2_PUBLIC_IP},
+                    docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER},
+                    docker run --name speed -d -p 8080:8080 ${DOCKER_IMAGE}:${BUILD_NUMBER} """
+                }
+            }
+        }
+        stage('terraform-destroy'){
+            when {
+                expression { params.ACTION == 'destroy' }
+            }
+            steps{
+                dir('terraform') {
+                    sh "terraform destroy --auto-approve"
+                }
+            }
+        }
     }
 }
