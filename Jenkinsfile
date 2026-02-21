@@ -96,7 +96,7 @@ pipeline{
                 expression { params.ACTION == 'apply' }
             }
             steps{
-                sshagent('ssh-agent') { 
+                sshagent([credentialsId: 'ssh-agent']) { 
                   sh """
                     ssh -o StrictHostKeyChecking=no -i devops ubuntu@${env.EC2_PUBLIC_IP}
                     docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER}
