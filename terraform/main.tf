@@ -70,7 +70,7 @@ resource "aws_security_group" "tsubsg" {
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  ingress = {
+  ingress {
     from_port = 8081
     to_port = 8081
     protocol = "tcp"
