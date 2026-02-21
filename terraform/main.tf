@@ -88,7 +88,6 @@ resource "aws_instance" "tsubec2" {
               sudo apt install docker-io -y
               sudo systemctl start docker
               sudo usermod -aG docker ubuntu
-
               EOF
     tags = {
       "Name" = "myec2ec2"
