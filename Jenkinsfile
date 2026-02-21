@@ -96,6 +96,7 @@ pipeline{
                 expression { params.ACTION == 'apply' }
             }
             steps{
+                sleep 60
                 sshagent(['ssh-agent']) { 
                   sh """
                     ssh -o StrictHostKeyChecking=no -i devops ubuntu@${env.EC2_PUBLIC_IP}
