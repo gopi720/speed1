@@ -100,8 +100,9 @@ pipeline{
                 sshagent(['ssh-agent']) { 
                   sh """
                     ssh -o StrictHostKeyChecking=no -i devops ubuntu@${env.EC2_PUBLIC_IP}
-                    'docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER}
-                    docker run  -d -p 8081:8080 ${DOCKER_IMAGE}:${BUILD_NUMBER}' """
+                    'sudo apt update && sudo apt install -y docker.io 
+                    sudo docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER}
+                    sudo docker run  -d -p 8081:8080 ${DOCKER_IMAGE}:${BUILD_NUMBER}' """
                 }
             }
         }
