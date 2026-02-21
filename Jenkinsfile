@@ -97,7 +97,7 @@ pipeline{
             }
             steps{
                 sleep 60
-                sshagent(['ec2-ssh']){
+                sshagent(['ssh-credentials']) {
                     sh """
                     ssh -o StrictHostKeyChecking=no -i devops ubuntu@${env.EC2_PUBLIC_IP},
                     docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER},
