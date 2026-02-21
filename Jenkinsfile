@@ -99,7 +99,7 @@ pipeline{
                 sleep 60
                 sshagent(['ssh-agent']) { 
                   sh """
-                    ssh -o StrictHostKeyChecking=no ubuntu@${env.EC2_PUBLIC_IP} << EOF
+                    ssh -o StrictHostKeyChecking=no ubuntu@${env.EC2_PUBLIC_IP} << 'EOF'
                     sudo apt update && sudo apt install -y docker.io 
                     sudo docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER}
                     sudo docker run  -d -p 8081:8080 ${DOCKER_IMAGE}:${BUILD_NUMBER}

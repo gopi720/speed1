@@ -82,14 +82,7 @@ resource "aws_instance" "tsubec2" {
   ami = data.aws_ami.tsubami.id
   key_name = aws_key_pair.tsubkeypair.key_name
   associate_public_ip_address = true
-  user_data = <<-EOF
-              #!/bin/bash
-              sudo apt update -y
-              sudo apt install docker-io -y
-              sudo systemctl start docker
-              sudo usermod -aG docker ubuntu
-              EOF
     tags = {
-      "Name" = "myec2ec2"
-    }
+    "Name" = "myec2ec2"
+  }
 }
