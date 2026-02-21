@@ -96,13 +96,11 @@ pipeline{
                 expression { params.ACTION == 'apply' }
             }
             steps{
-                sleep 60
-                sshagent(['ssh-agent']) {
-                    sh """
-                    ssh -o StrictHostKeyChecking=no -i devops ubuntu@${env.EC2_PUBLIC_IP},
-                    docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER},
-                    docker run --name speed -d -p 8080:8080 ${DOCKER_IMAGE}:${BUILD_NUMBER} """
-                }
+                
+             sh """
+                ssh -o StrictHostKeyChecking=no -i devops ubuntu@${env.EC2_PUBLIC_IP},
+                docker pull ${DOCKER_IMAGE}:${BUILD_NUMBER},
+                docker run --name speed -d -p 8080:8080 ${DOCKER_IMAGE}:${BUILD_NUMBER} """
             }
         }
         stage('terraform-destroy'){
